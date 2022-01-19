@@ -20,9 +20,6 @@ class _BottomAdsScreenState extends State<BottomAdsScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _loadAd();
-    if (interstitialAd != null) {
-      interstitialAd!.show();
-    }
   }
 
   void _loadAd() async {

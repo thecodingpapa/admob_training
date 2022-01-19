@@ -1,7 +1,9 @@
+import 'package:admob_training/main.dart';
 import 'package:admob_training/screens/bottom_ads_screen.dart';
 import 'package:admob_training/screens/inline_ads_screen.dart';
 import 'package:admob_training/screens/top_ads_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class Select extends StatelessWidget {
   Select({Key? key}) : super(key: key);
@@ -38,7 +40,11 @@ class Select extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) => const BottomAdsScreen()),
-                  );
+                  ).then((value) {
+                    if (interstitialAd != null) {
+                      interstitialAd!.show();
+                    }
+                  });
                 },
                 style: btnStyle,
                 child: Text(
@@ -51,7 +57,14 @@ class Select extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) => const TopAdsScreen()),
-                  );
+                  ).then((value) {
+                    if (rewardedAd != null) {
+                      rewardedAd!.show(onUserEarnedReward:
+                          (RewardedAd ad, RewardItem rewardItem) {
+                        // Reward the user for watching an ad.
+                      });
+                    }
+                  });
                 },
                 style: btnStyle,
                 child: Text(
@@ -64,7 +77,14 @@ class Select extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) => const InlineAdsScreen()),
-                  );
+                  ).then((value) {
+                    if (rewardedAd != null) {
+                      rewardedAd!.show(onUserEarnedReward:
+                          (RewardedAd ad, RewardItem rewardItem) {
+                        // Reward the user for watching an ad.
+                      });
+                    }
+                  });
                 },
                 style: btnStyle,
                 child: Text(

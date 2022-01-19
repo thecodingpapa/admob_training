@@ -13,29 +13,12 @@ class TopAdsScreen extends StatefulWidget {
 
 class _TopAdsScreenState extends State<TopAdsScreen> {
   BannerAd? _bannerAd;
-  InterstitialAd? _interstitialAd;
   bool _isLoaded = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _loadAd();
-    _loadInterstitialAd();
-  }
-
-  void _loadInterstitialAd() {
-    InterstitialAd.load(
-        adUnitId: InterstitialAd.testAdUnitId,
-        request: AdRequest(),
-        adLoadCallback: InterstitialAdLoadCallback(
-          onAdLoaded: (InterstitialAd ad) {
-            _interstitialAd = ad;
-            _interstitialAd!.show();
-          },
-          onAdFailedToLoad: (LoadAdError error) {
-            print('InterstitialAd failed to load: $error');
-          },
-        ));
   }
 
   void _loadAd() async {
