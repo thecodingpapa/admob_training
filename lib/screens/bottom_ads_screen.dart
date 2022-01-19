@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:admob_training/dummy.dart';
+import 'package:admob_training/main.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -13,29 +14,12 @@ class BottomAdsScreen extends StatefulWidget {
 
 class _BottomAdsScreenState extends State<BottomAdsScreen> {
   BannerAd? _bannerAd;
-  InterstitialAd? _interstitialAd;
   bool _isLoaded = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _loadAd();
-    _loadInterstitialAd();
-  }
-
-  void _loadInterstitialAd() {
-    InterstitialAd.load(
-        adUnitId: InterstitialAd.testAdUnitId,
-        request: AdRequest(),
-        adLoadCallback: InterstitialAdLoadCallback(
-          onAdLoaded: (InterstitialAd ad) {
-            _interstitialAd = ad;
-            _interstitialAd!.show();
-          },
-          onAdFailedToLoad: (LoadAdError error) {
-            print('InterstitialAd failed to load: $error');
-          },
-        ));
   }
 
   void _loadAd() async {
