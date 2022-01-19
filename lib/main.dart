@@ -6,6 +6,8 @@ void main() {
   runApp(const MyApp());
 }
 
+InterstitialAd? interstitialAd;
+
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -14,6 +16,44 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadInterstitialAd();
+  }
+
+  void _loadInterstitialAd() {
+    InterstitialAd.load(
+        adUnitId: InterstitialAd.testAdUnitId,
+        request: AdRequest(),
+        adLoadCallback: InterstitialAdLoadCallback(
+          onAdLoaded: (InterstitialAd ad) {
+            interstitialAd = ad;
+
+            interstitialAd!.fullScreenContentCallback =
+                FullScreenContentCallback(
+              onAdShowedFullScreenContent: (InterstitialAd ad) =>
+                  print('%ad onAdShowedFullScreenContent.'),
+              onAdDismissedFullScreenContent: (InterstitialAd ad) {
+                ad.dispose();
+                interstitialAd = null;
+                _loadInterstitialAd();
+              },
+              onAdFailedToShowFullScreenContent:
+                  (InterstitialAd ad, AdError error) {
+                print('$ad onAdFailedToShowFullScreenContent: $error');
+                ad.dispose();
+              },
+              onAdImpression: (InterstitialAd ad) =>
+                  print('$ad impression occurred.'),
+            );
+          },
+          onAdFailedToLoad: (LoadAdError error) {
+            print('InterstitialAd failed to load: $error');
+          },
+        ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
