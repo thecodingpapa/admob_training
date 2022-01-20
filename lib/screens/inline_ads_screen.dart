@@ -13,10 +13,7 @@ class InlineAdsScreen extends StatefulWidget {
 
 class _InlineAdsScreenState extends State<InlineAdsScreen> {
   bool _isLoaded = false;
-  BannerAd? myBanner;
-
-  Size get _screenSize => MediaQuery.of(context).size;
-  AdSize? _adSize;
+  NativeAd? myNativeAd;
 
   @override
   void didChangeDependencies() {
@@ -25,26 +22,14 @@ class _InlineAdsScreenState extends State<InlineAdsScreen> {
   }
 
   void _loadAd() {
-    AdSize size =
-        AdSize.getInlineAdaptiveBannerAdSize(_screenSize.width.truncate(), 200);
-
-    myBanner = BannerAd(
-        adUnitId: BannerAd.testAdUnitId,
-        size: size,
+    myNativeAd = NativeAd(
+        adUnitId: NativeAd.testAdUnitId,
         request: AdRequest(),
-        listener: BannerAdListener(
+        listener: NativeAdListener(
           onAdLoaded: (Ad ad) async {
-            print('Inline adaptive banner loaded: ${ad.responseInfo}');
-            BannerAd bannerAd = (ad as BannerAd);
-            final AdSize? size = await bannerAd.getPlatformAdSize();
-            if (size == null) {
-              print('Error: getPlatformAdSize() returned null for $bannerAd');
-              return;
-            }
             setState(() {
-              myBanner = bannerAd;
+              myNativeAd = (ad as NativeAd);
               _isLoaded = true;
-              _adSize = size;
             });
           },
           onAdFailedToLoad: (Ad ad, LoadAdError error) {
@@ -54,8 +39,9 @@ class _InlineAdsScreenState extends State<InlineAdsScreen> {
           onAdOpened: (Ad ad) => print('Ad opened.'),
           onAdClosed: (Ad ad) => print('Ad closed.'),
           onAdImpression: (Ad ad) => print('Ad impression.'),
-        ));
-    myBanner!.load();
+        ),
+        factoryId: 'adFactoryExample');
+    myNativeAd!.load();
   }
 
   @override
@@ -64,13 +50,12 @@ class _InlineAdsScreenState extends State<InlineAdsScreen> {
       body: ListView.builder(
         itemBuilder: (context, index) {
           if (index == 3) {
-            if (myBanner != null && _adSize != null && _isLoaded) {
+            if (myNativeAd != null && _isLoaded) {
               return Container(
                 alignment: Alignment.center,
-                height: _adSize!.height.toDouble(),
-                width: _adSize!.width.toDouble(),
+                height: 80,
                 child: AdWidget(
-                  ad: myBanner!,
+                  ad: myNativeAd!,
                 ),
               );
             } else {
